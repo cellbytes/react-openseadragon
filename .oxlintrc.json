@@ -1,0 +1,45 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "react", "jsx-a11y", "import"],
+  "options": {
+    "typeAware": true
+  },
+
+  "env": { "browser": true, "es2020": true },
+
+  "ignorePatterns": ["dist/**", "node_modules/**", "coverage/**"],
+
+  "rules": {
+    "no-unused-vars": "off",
+    "typescript/no-explicit-any": "error",
+    "typescript/unbound-method": "off",
+    "typescript/no-misused-spread": "off",
+    "typescript/no-unused-vars": [
+      "error",
+      {
+        "varsIgnorePattern": "^_",
+        "argsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
+      }
+    ],
+
+    "typescript/explicit-function-return-type": "off",
+    "typescript/explicit-module-boundary-types": "off",
+    "typescript/no-non-null-assertion": "off",
+    "typescript/consistent-type-definitions": "off",
+
+    "react/react-in-jsx-scope": "off",
+    "react/display-name": "off",
+
+    "jsx-a11y/anchor-is-valid": "error"
+  },
+
+  "overrides": [
+    {
+      "files": ["**/*.js", "**/*.cjs"],
+      "rules": {
+        "typescript/no-unused-vars": "off"
+      }
+    }
+  ]
+}

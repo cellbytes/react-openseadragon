@@ -1,0 +1,72 @@
+# @cellbytes/react-openseadragon
+
+A thin, declarative React wrapper around [OpenSeadragon](https://openseadragon.github.io/):
+hooks, components, and a small plugin mechanism for building deep-zoom image
+viewers. It keeps OpenSeadragon's imperative viewer in sync with React state
+without hiding the underlying API.
+
+## Features
+
+- `useOpenseadragon` - initialize and own an OpenSeadragon viewer from React.
+- `<TiledImage>` - declaratively add/remove/position tile sources (DZI, simple
+  image, or any OSD tile source) in the viewer world.
+- Hooks for the common needs: `useWorld`, `useTiledImage`, `useViewerState`,
+  `useViewer`, `useCoordinates`, `useMouseTracker`, `useViewerEvent`.
+- A minimal plugin mechanism (`createPrototypePlugin`, `createInstancePlugin`)
+  for wrapping OSD prototype/instance extensions.
+
+## Installation
+
+```sh
+npm install @cellbytes/react-openseadragon openseadragon react
+```
+
+`react` and `openseadragon` are peer dependencies; install the versions your app
+uses (React 19+, OpenSeadragon 6+).
+
+## Usage
+
+```tsx
+import { useOpenseadragon, ViewerStateProvider, TiledImage } from 'react-openseadragon';
+
+function Viewer() {
+  const state = useOpenseadragon({ options: { showNavigator: false } });
+
+  return (
+    <ViewerStateProvider state={state}>
+      <div ref={state.setContainerElement} style={{ width: '100%', height: 600 }} />
+      <TiledImage imageKey="primary" tileSource="https://example.com/image.dzi" />
+    </ViewerStateProvider>
+  );
+}
+```
+
+See the JSDoc on each export for detailed usage.
+
+## Development
+
+This project uses Node 22 (see `.nvmrc`), [oxlint]/[oxfmt] for linting and
+formatting, [tsgo] for type checking, and Vitest browser mode (Playwright) for
+tests against a real viewer.
+
+```sh
+npm install                       # also installs git hooks via lefthook
+npm run lint                      # oxlint + oxfmt --check
+npm run typecheck                 # tsgo --noEmit
+npx playwright install chromium   # one-time, for browser tests
+npm run test                      # vitest run (browser mode)
+npm run build                     # ESM bundle (Vite) + .d.ts (tsgo)
+```
+
+Commits follow [Conventional Commits][cc]; releases to npm are automated by
+[semantic-release] on push to `main`.
+
+[oxlint]: https://oxc.rs/docs/guide/usage/linter
+[oxfmt]: https://oxc.rs/
+[tsgo]: https://github.com/microsoft/typescript-go
+[cc]: https://www.conventionalcommits.org/
+[semantic-release]: https://semantic-release.gitbook.io/
+
+## License
+
+Licensed under the [European Union Public Licence v1.2](./LICENSE) (EUPL-1.2).

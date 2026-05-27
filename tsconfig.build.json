@@ -1,0 +1,17 @@
+{
+  /* Declaration-only build. Vite emits the JS bundle; tsgo emits the .d.ts
+     files here. Kept separate from tsconfig.json so the typecheck task can
+     stay noEmit and cover tests, while this config emits only the public
+     source (tests and test helpers excluded from the published types). */
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "allowImportingTsExtensions": false,
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "include": ["src"],
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/testUtils.tsx"]
+}
