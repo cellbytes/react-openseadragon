@@ -1,0 +1,19 @@
+# Git hooks managed by lefthook (https://lefthook.dev).
+# Installed automatically via the package.json "prepare" script.
+pre-commit:
+  parallel: true
+  commands:
+    lint:
+      glob: '*.{ts,tsx}'
+      run: npx oxlint {staged_files}
+    format:
+      glob: '*.{ts,tsx}'
+      run: npx oxfmt --check {staged_files}
+    # tsgo has no reliable single-file mode, so typecheck the whole project.
+    typecheck:
+      run: npm run typecheck
+
+commit-msg:
+  commands:
+    commitlint:
+      run: npx commitlint --edit {1}

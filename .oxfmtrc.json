@@ -1,0 +1,27 @@
+{
+  "semi": true,
+  "tabWidth": 2,
+  "printWidth": 100,
+  "singleQuote": true,
+  "trailingComma": "es5",
+
+  "ignorePatterns": ["dist/**", "node_modules/**", "coverage/**"],
+
+  "sortImports": {
+    "newlinesBetween": true,
+    "order": "asc",
+    "ignoreCase": true,
+    "customGroups": [
+      {
+        "groupName": "react",
+        "elementNamePattern": ["react", "react-*"]
+      }
+    ],
+    "groups": [
+      "react",
+      ["value-builtin", "value-external"],
+      ["value-parent", "value-sibling", "value-index"],
+      "unknown"
+    ]
+  }
+}

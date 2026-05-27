@@ -1,0 +1,81 @@
+{
+  "name": "@cellbytes/react-openseadragon",
+  "version": "0.0.0-development",
+  "description": "A thin, declarative React wrapper around OpenSeadragon: hooks, components, and a small plugin mechanism.",
+  "keywords": [
+    "deep-zoom",
+    "dzi",
+    "hooks",
+    "image-viewer",
+    "openseadragon",
+    "react"
+  ],
+  "homepage": "https://github.com/cellbytes/react-openseadragon#readme",
+  "bugs": {
+    "url": "https://github.com/cellbytes/react-openseadragon/issues"
+  },
+  "license": "EUPL-1.2",
+  "author": "Cellbytes",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cellbytes/react-openseadragon.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vite build && tsgo -p tsconfig.build.json",
+    "typecheck": "tsgo --noEmit",
+    "lint": "oxlint . && oxfmt --check .",
+    "format": "oxfmt .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepare": "lefthook install",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.0.1",
+    "@commitlint/config-conventional": "^21.0.1",
+    "@playwright/test": "^1.60.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@types/openseadragon": "^6.0.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@typescript/native-preview": "^7.0.0-dev.20260519.1",
+    "@vitejs/plugin-react": "^6.0.2",
+    "@vitest/browser-playwright": "^4.1.6",
+    "lefthook": "^2.1.8",
+    "openseadragon": "^6.0.2",
+    "oxfmt": "^0.51.0",
+    "oxlint": "^1.65.0",
+    "oxlint-tsgolint": "^0.23.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "semantic-release": "^25.0.3",
+    "vite": "^8.0.13",
+    "vitest": "^4.1.6",
+    "vitest-browser-react": "^2.2.0"
+  },
+  "peerDependencies": {
+    "openseadragon": ">=6",
+    "react": ">=19"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}
