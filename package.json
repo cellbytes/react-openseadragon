@@ -1,6 +1,6 @@
 {
   "name": "@cellbytes/react-openseadragon",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A thin, declarative React wrapper around OpenSeadragon: hooks, components, and a small plugin mechanism.",
   "keywords": [
     "deep-zoom",
