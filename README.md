@@ -7,7 +7,7 @@ without hiding the underlying API.
 
 ## Features
 
-- `useOpenseadragon` - initialize and own an OpenSeadragon viewer from React.
+- `useOpenseadragon` - initialize an OpenSeadragon viewer from React.
 - `<TiledImage>` - declaratively add/remove/position tile sources (DZI, simple
   image, or any OSD tile source) in the viewer world.
 - Hooks for the common needs: `useWorld`, `useTiledImage`, `useViewerState`,
@@ -29,8 +29,10 @@ uses (React 19+, OpenSeadragon 6+).
 ```tsx
 import { useOpenseadragon, ViewerStateProvider, TiledImage } from 'react-openseadragon';
 
+const VIEWER_OPTIONS = { showNavigator: false };
+
 function Viewer() {
-  const state = useOpenseadragon({ options: { showNavigator: false } });
+  const state = useOpenseadragon({ options: VIEWER_OPTIONS });
 
   return (
     <ViewerStateProvider state={state}>

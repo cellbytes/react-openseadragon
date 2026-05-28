@@ -45,21 +45,19 @@ export interface OsdState {
 }
 
 /**
- * Initialises an OpenSeadragon viewer at the layout level, decoupled from the
- * container div's location in the tree.
+ * Owns one OpenSeadragon viewer instance. Returns the viewer plus a callback
+ * ref to attach to the div that should host the OSD canvas.
  *
- * The returned setContainerElement should be passed as the ref prop of the div
- * that the Viewer component renders. OSD initialises as soon as the element is
- * available and cleans up when it is removed (e.g. when the Viewer unmounts).
- *
- * Pass the returned OsdState to ViewerStateProvider to make viewer state
- * accessible to all descendants via useViewerContext().
+ * OSD initialises as soon as the element is available and cleans up when it
+ * is removed. Pass the returned OsdState to ViewerStateProvider to make the
+ * viewer accessible to descendants via useViewerContext().
  *
  * @example
  * const osdState = useOpenseadragon({ options: VIEWER_OPTIONS, plugins: PLUGINS });
  * return (
  *   <ViewerStateProvider state={osdState}>
- *     <Outlet />
+ *     <div ref={osdState.setContainerElement} style={{ width: '100%', height: 600 }} />
+ *     <TiledImage imageKey="primary" tileSource={tileSource} />
  *   </ViewerStateProvider>
  * );
  */

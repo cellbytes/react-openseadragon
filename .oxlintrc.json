@@ -7,7 +7,7 @@
 
   "env": { "browser": true, "es2020": true },
 
-  "ignorePatterns": ["dist/**", "node_modules/**", "coverage/**"],
+  "ignorePatterns": ["dist/**", "node_modules/**", "coverage/**", "CHANGELOG.md"],
 
   "rules": {
     "no-unused-vars": "off",

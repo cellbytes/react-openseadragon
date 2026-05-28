@@ -1,3 +1,13 @@
+import OpenSeadragon from 'openseadragon';
+
+// Side effect: many third-party OpenSeadragon plugins are bare browser
+// scripts written as `(function ($) { ... }(OpenSeadragon))` that read
+// `OpenSeadragon` from the global scope. Expose the npm module the same way
+// so consumers can load those plugins with no extra plumbing.
+if (typeof globalThis !== 'undefined') {
+  (globalThis as { OpenSeadragon?: typeof OpenSeadragon }).OpenSeadragon ??= OpenSeadragon;
+}
+
 // Components
 export { TiledImage } from './components/TiledImage';
 export type { TiledImageProps } from './components/TiledImage';

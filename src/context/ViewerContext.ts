@@ -64,9 +64,9 @@ export interface ViewerContextValue {
    */
   tileCache: TileCache | undefined;
   /**
-   * Callback ref for the OSD container div. The Viewer component passes this as
-   * the ref prop on the div it renders, so the layout-level provider can detect
-   * when the container is available and initialise OSD.
+   * Callback ref for the OSD container div. Attach this as the `ref` prop on
+   * the div that should host the OSD canvas. The provider initialises OSD as
+   * soon as the element is available and tears it down when it is removed.
    */
   setContainerElement: (el: HTMLDivElement | null) => void;
 }

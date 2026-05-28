@@ -11,29 +11,21 @@ interface ViewerStateProviderProps {
 }
 
 /**
- * Thin context provider for layout-level viewer initialisation. Accepts the
- * OsdState returned by useOpenseadragon and makes it available to all
- * descendants via useViewerContext().
+ * Thin context provider that shares the OsdState returned by useOpenseadragon
+ * with every descendant via useViewerContext().
  *
- * Pair this with useOpenseadragon at the layout level to share a single viewer
- * instance across an entire route subtree without nesting a ViewerProvider
- * inside the Viewer component.
- *
- * The Viewer component inside this subtree must render a div and attach
+ * Render it as an ancestor of every component that needs to read viewer
+ * state. The component that renders the OSD container div must attach
  * state.setContainerElement as its ref so OSD knows where to mount.
  *
  * @example
- * // In the layout:
  * const osdState = useOpenseadragon({ options: VIEWER_OPTIONS, plugins: PLUGINS });
  * return (
  *   <ViewerStateProvider state={osdState}>
- *     <Outlet />
+ *     <div ref={osdState.setContainerElement} style={{ width: '100%', height: 600 }} />
+ *     <TiledImage imageKey="primary" tileSource={tileSource} />
  *   </ViewerStateProvider>
  * );
- *
- * // In the Viewer component:
- * const { setContainerElement } = useViewerContext();
- * return <div id="openSeaDragon" ref={setContainerElement} />;
  */
 export function ViewerStateProvider({ state, children }: ViewerStateProviderProps) {
   const value = useMemo(
