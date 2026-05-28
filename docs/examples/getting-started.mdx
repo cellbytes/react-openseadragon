@@ -1,0 +1,56 @@
+---
+id: getting-started
+title: Getting started
+slug: /getting-started
+---
+
+import CodeBlock from '@theme/CodeBlock';
+import SimpleViewer from '@site/src/components/SimpleViewer';
+import simpleViewerSource from '!!raw-loader!@site/src/components/SimpleViewerDemo.tsx';
+
+A working viewer needs three pieces:
+
+1. `useOpenseadragon` to initialize the viewer instance.
+2. A `<div>` whose ref the hook fills in. OSD mounts there.
+3. One `<TiledImage>` per tile source you want to show.
+
+## Install
+
+```bash
+npm install @cellbytes/react-openseadragon openseadragon react
+```
+
+`react` and `openseadragon` are peer dependencies. Use the versions your app
+already has.
+
+## A minimal viewer
+
+The code block below is the exact source of the component rendered under
+"Live demo" further down. Drop it into your app and the viewer will work the
+same way it does on this page.
+
+<CodeBlock language="tsx" title="SimpleViewerDemo.tsx">
+  {simpleViewerSource}
+</CodeBlock>
+
+A few notes:
+
+- `VIEWER_OPTIONS` sits outside the component on purpose. `useOpenseadragon`
+  destroys and rebuilds the viewer whenever the options reference changes,
+  so a stable module-level constant keeps the viewer alive across re-renders.
+- `prefixUrl` points at the directory where OpenSeadragon's button icons live.
+  The default is `/images/`, which works when your site is served from the
+  root. This docs site is served under `/react-openseadragon/`, so the value
+  here is set to that path. Change it to match your own deployment.
+
+## Live demo
+
+<SimpleViewer />
+
+Pan with the mouse, zoom with the wheel, double-click to zoom in.
+
+## What to read next
+
+- The [API reference](/api/) lists every export.
+- The [Multiple images](/examples/multi-image) page adds a second image, an
+  opacity slider, and a live readout of the world contents.

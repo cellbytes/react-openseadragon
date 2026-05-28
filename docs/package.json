@@ -1,0 +1,39 @@
+{
+  "name": "react-openseadragon-docs",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "predev": "node scripts/copy-osd-images.mjs",
+    "prebuild": "node scripts/copy-osd-images.mjs",
+    "dev": "docusaurus start",
+    "build": "docusaurus build",
+    "serve": "docusaurus serve",
+    "clear": "docusaurus clear",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@docusaurus/core": "^3.10.1",
+    "@docusaurus/faster": "^3.10.1",
+    "@docusaurus/preset-classic": "^3.10.1",
+    "@docusaurus/theme-common": "^3.10.1",
+    "@easyops-cn/docusaurus-search-local": "^0.55.1",
+    "@mdx-js/react": "^3.0.0",
+    "clsx": "^2.0.0",
+    "docusaurus-plugin-typedoc-api": "^4.4.0",
+    "openseadragon": "^6.0.2",
+    "prism-react-renderer": "^2.4.0",
+    "raw-loader": "^4.0.2",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "typedoc": "0.25.13",
+    "typescript": "~5.4.5"
+  },
+  "devDependencies": {
+    "@docusaurus/module-type-aliases": "^3.10.1",
+    "@docusaurus/tsconfig": "^3.10.1",
+    "@docusaurus/types": "^3.10.1",
+    "@types/openseadragon": "^6.0.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3"
+  }
+}

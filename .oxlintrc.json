@@ -7,7 +7,13 @@
 
   "env": { "browser": true, "es2020": true },
 
-  "ignorePatterns": ["dist/**", "node_modules/**", "coverage/**", "CHANGELOG.md"],
+  "ignorePatterns": [
+    "dist/**",
+    "node_modules/**",
+    "coverage/**",
+    "CHANGELOG.md",
+    "docs/src/lib/openseadragon-scalebar.js"
+  ],
 
   "rules": {
     "no-unused-vars": "off",
@@ -39,6 +45,12 @@
       "files": ["**/*.js", "**/*.cjs"],
       "rules": {
         "typescript/no-unused-vars": "off"
+      }
+    },
+    {
+      "files": ["docs/src/lib/scalebar.ts"],
+      "rules": {
+        "typescript/no-explicit-any": "off"
       }
     }
   ]

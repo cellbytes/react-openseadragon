@@ -1,0 +1,58 @@
+---
+id: scalebar-plugin
+title: Custom OpenSeadragon plugin
+slug: /scalebar-plugin
+---
+
+import CodeBlock from '@theme/CodeBlock';
+import ScalebarViewer from '@site/src/components/ScalebarViewer';
+import scalebarSource from '!!raw-loader!@site/src/lib/scalebar.ts';
+import demoSource from '!!raw-loader!@site/src/components/ScalebarViewerDemo.tsx';
+
+This page shows how to load a stock OpenSeadragon plugin alongside this
+library. The example uses
+[OpenSeadragonScalebar](https://github.com/usnistgov/OpenSeadragonScalebar),
+a small plugin that draws a configurable scale bar over the viewer.
+
+## How the integration works
+
+Most OpenSeadragon plugins on GitHub are written as IIFE scripts that mutate
+`OpenSeadragon.Viewer.prototype` and read `OpenSeadragon` from the global
+scope. Two things make them work with this library:
+
+1. **The library publishes `OpenSeadragon` on `globalThis`** as a side
+   effect of being imported, so the IIFE finds what it expects when you
+   side-effect import the script.
+2. **`createPrototypePlugin` + `createInstancePlugin`** wrap the global
+   mutation and the per-viewer call respectively, so the lifecycle is
+   tracked by `useOpenseadragon`.
+
+## Wrapping the plugin
+
+Drop the vendored plugin file into your source tree and write a tiny
+wrapper. The whole thing fits in 20 lines.
+
+<CodeBlock language="ts" title="src/lib/scalebar.ts">
+  {scalebarSource}
+</CodeBlock>
+
+The two imports at the top run in source order: the library imports its own
+`OpenSeadragon` module and exposes it on `globalThis`, then the IIFE
+evaluates and finds the global it expects.
+
+## Using the plugin
+
+Spread the result of `scalebarPlugin(...)` into `useOpenseadragon`'s
+`plugins` array. Keep the array and the options object at module scope so
+the references stay stable across re-renders.
+
+<CodeBlock language="tsx" title="ScalebarViewerDemo.tsx">
+  {demoSource}
+</CodeBlock>
+
+## Live demo
+
+<ScalebarViewer />
+
+The bar in the lower left is the OpenSeadragonScalebar plugin reading the
+current viewport zoom and rendering a length matching `pixelsPerMeter`.

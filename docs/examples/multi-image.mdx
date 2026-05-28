@@ -1,0 +1,36 @@
+---
+id: multi-image
+title: Multiple images
+slug: /multi-image
+---
+
+import CodeBlock from '@theme/CodeBlock';
+import MultiImageViewer from '@site/src/components/MultiImageViewer';
+import multiImageSource from '!!raw-loader!@site/src/components/MultiImageViewerDemo.tsx';
+
+This example puts more of the API into one viewer:
+
+- Two `<TiledImage>` entries side by side in viewport coordinates.
+- A button that adds and removes the second image at runtime.
+- A slider that drives the second image's `opacity` prop. The library
+  applies opacity through `tiledImage.setOpacity()` rather than re-adding the
+  image, so the slider stays smooth.
+- `useWorld()` reading the current contents and showing the keys.
+- The OpenSeadragon navigator turned on.
+
+## Live demo
+
+<MultiImageViewer />
+
+When the second image is added it sits at `x={1.05}`, just to the right of
+the first with a 5 percent gap. Width defaults to 1, the same as the primary
+image, and OSD picks the height from the tile source aspect ratio. The world
+readout updates whenever a `<TiledImage>` mounts or unmounts.
+
+## Source
+
+This is the same component you see above, with no edits.
+
+<CodeBlock language="tsx" title="MultiImageViewerDemo.tsx">
+  {multiImageSource}
+</CodeBlock>

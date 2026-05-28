@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "esModuleInterop": true,
+    "jsx": "preserve",
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
+    "moduleResolution": "bundler",
+    "module": "esnext",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@cellbytes/react-openseadragon": ["../src/index.ts"],
+      "@site/*": ["./*"]
+    }
+  },
+  "include": ["src/", "examples/", "../src/", "docusaurus.config.ts", "sidebars.ts"],
+  "exclude": ["build", ".docusaurus", "node_modules"]
+}
