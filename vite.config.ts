@@ -24,6 +24,7 @@ export default defineConfig(({ command }) => ({
   test: {
     globals: true,
     watch: false,
+    setupFiles: ['./vitest.setup.ts'],
     // Browser mode runs the OSD viewer against a real canvas, matching how the
     // library behaves in consumer apps. Fixtures under public/ are served at the
     // site root (see public/fixtures).
