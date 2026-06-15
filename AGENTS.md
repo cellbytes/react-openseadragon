@@ -21,15 +21,15 @@ package and consumed by the Cellbytes `app` client. It is a library, not an app.
 
 ## Common commands
 
-| Command | Purpose |
-| --- | --- |
-| `npm install` | Install dependencies (also installs lefthook hooks). |
-| `npm run build` | Build the library and emit type declarations. |
-| `npm run typecheck` | Type-check with `tsgo --noEmit`. |
-| `npm run lint` | `oxlint .` + `oxfmt --check .`. |
-| `npm run format` | Auto-format with `oxfmt`. |
-| `npm test` | Run the Vitest suite once. |
-| `npm run test:watch` | Vitest in watch mode. |
+| Command              | Purpose                                              |
+| -------------------- | ---------------------------------------------------- |
+| `npm install`        | Install dependencies (also installs lefthook hooks). |
+| `npm run build`      | Build the library and emit type declarations.        |
+| `npm run typecheck`  | Type-check with `tsgo --noEmit`.                     |
+| `npm run lint`       | `oxlint .` + `oxfmt --check .`.                      |
+| `npm run format`     | Auto-format with `oxfmt`.                            |
+| `npm test`           | Run the Vitest suite once.                           |
+| `npm run test:watch` | Vitest in watch mode.                                |
 
 ## Conventions
 
