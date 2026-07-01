@@ -173,7 +173,13 @@ export function useOpenseadragon({ options, plugins }: UseOpenseadragonOptions):
       setIsOpen(false);
       setIsLoading(false);
       setWorldItems([]);
-      setTileSource(undefined);
+      // tileSource is consumer-published state (set via setTileSource for
+      // cell-image thumbnails), independent of the viewer instance, so it is NOT
+      // reset here. This cleanup also runs when the viewer re-initialises
+      // (container element / options / plugins change) while the hook stays
+      // mounted; clearing tileSource there would blank every consumer until its
+      // own effect happened to re-publish. On a full unmount React discards the
+      // state with the hook anyway.
     };
     // tileCache is stable (created once via useState initialiser).
     // eslint-disable-next-line react-hooks/exhaustive-deps
