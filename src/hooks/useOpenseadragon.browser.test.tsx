@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import OpenSeadragon from 'openseadragon';
 import { describe, expect, test, vi } from 'vitest';
@@ -105,6 +105,67 @@ describe('useOpenseadragon', () => {
     for (const state of states.slice(1)) {
       expect(state.tileCache).toBe(firstCache);
     }
+  });
+
+  test('consumer-published tileSource survives a viewer re-init', async () => {
+    const states: OsdState[] = [];
+    const publishedSource = {
+      type: 'image' as const,
+      url: '/fixtures/test-image.jpg',
+    } as unknown as OpenSeadragon.TileSource;
+
+    function ReinitHarness() {
+      // A changing options reference forces useOpenseadragon to tear down and
+      // recreate the viewer, the same thing a dev HMR remount does when it hands
+      // the layout new module-level option/plugin references.
+      const [gen, setGen] = useState(0);
+      // A new options object per generation forces the re-init; `gen` is read
+      // only to vary the reference.
+      const options = useMemo(() => ({ ...testViewerOptions, sequenceMode: gen > 0 }), [gen]);
+      const state = useOpenseadragon({ options, plugins: TEST_VIEWER_PLUGINS });
+      states.push(state);
+      return (
+        <div>
+          <div ref={state.setContainerElement} style={{ width: 400, height: 400 }} />
+          <button type="button" onClick={() => state.setTileSource(publishedSource)}>
+            publish
+          </button>
+          <button type="button" onClick={() => setGen((g) => g + 1)}>
+            reinit
+          </button>
+        </div>
+      );
+    }
+
+    const { getByRole } = await render(<ReinitHarness />);
+
+    await vi.waitFor(
+      () => {
+        expect(states.at(-1)!.viewer).not.toBeNull();
+      },
+      { timeout: 5000 }
+    );
+
+    // A consumer publishes the active slide's tile source (as the app does).
+    await getByRole('button', { name: 'publish' }).click();
+    await vi.waitFor(() => {
+      expect(states.at(-1)!.tileSource).toBe(publishedSource);
+    });
+    const viewerBefore = states.at(-1)!.viewer;
+
+    // Force the viewer to re-initialise.
+    await getByRole('button', { name: 'reinit' }).click();
+    await vi.waitFor(
+      () => {
+        expect(states.at(-1)!.viewer).not.toBeNull();
+        expect(states.at(-1)!.viewer).not.toBe(viewerBefore);
+      },
+      { timeout: 5000 }
+    );
+
+    // The published tile source survives the re-init: no consumer re-publish is
+    // required to keep cell-image thumbnails rendering.
+    expect(states.at(-1)!.tileSource).toBe(publishedSource);
   });
 
   test('_register and _unregister update worldItems - verified via TiledImage mount', async () => {
