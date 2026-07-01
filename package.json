@@ -64,7 +64,7 @@
     "@vitest/browser-playwright": "^4.1.6",
     "lefthook": "^2.1.8",
     "openseadragon": "^6.0.2",
-    "oxfmt": "^0.51.0",
+    "oxfmt": "^0.55.0",
     "oxlint": "^1.65.0",
     "oxlint-tsgolint": "^0.23.0",
     "react": "^19.2.6",
