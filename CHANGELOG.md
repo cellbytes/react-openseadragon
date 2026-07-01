@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/cellbytes/react-openseadragon/compare/v1.1.0...v1.1.1) (2026-07-01)
+
+
+### Bug Fixes
+
+* **useOpenseadragon:** keep published tileSource across viewer re-init ([#21](https://github.com/cellbytes/react-openseadragon/issues/21)) ([a517c69](https://github.com/cellbytes/react-openseadragon/commit/a517c699892fc9d38e8dd5cbadf6cc9d18006796))
+
 # [1.1.0](https://github.com/cellbytes/react-openseadragon/compare/v1.0.0...v1.1.0) (2026-05-28)
 
 
