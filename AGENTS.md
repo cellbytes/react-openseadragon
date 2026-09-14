@@ -50,3 +50,8 @@ npm run format && npm run lint && npm run typecheck && npm test
 
 Commit messages must be conventional commits (enforced by commitlint); releases
 are automated via semantic-release (`.releaserc.json`).
+
+Docs-only commits (nothing but Markdown or other documentation changed) carry
+`[skip ci]` in the commit message body. There is nothing for CI to verify, and
+the run would otherwise cut a release and bump the version for a change that
+ships no new behaviour.
