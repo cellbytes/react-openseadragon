@@ -55,3 +55,8 @@ Docs-only commits (nothing but Markdown or other documentation changed) carry
 `[skip ci]` in the commit message body. There is nothing for CI to verify, and
 the run would otherwise cut a release and bump the version for a change that
 ships no new behaviour.
+
+GitHub reads `[skip ci]` from the tip commit of a push and skips that whole
+push, not just the one commit. Only use it when every commit being pushed is
+docs-only: a docs commit stacked on top of code commits silently skips CI for
+the code as well.
