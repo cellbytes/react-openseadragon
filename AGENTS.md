@@ -19,6 +19,23 @@ package and consumed by the Cellbytes `app` client. It is a library, not an app.
 - Git hooks: `lefthook` (installed via the `prepare` script) runs lint, format
   check, and typecheck on commit; `commitlint` enforces conventional commits.
 
+## TypeScript language server for coding agents
+
+Coding agents get tsgo diagnostics and navigation in-session, from a Claude Code
+plugin this repo carries under `.claude/`. There is no devcontainer here to
+register it on create: inside the unified dev-env container this repo's
+TypeScript is already served by the plugin the `app` repo carries, and opening
+it standalone means running these once by hand:
+
+```sh
+claude plugin marketplace add <repo root>/.claude
+claude plugin install tsgo-lsp@cellbytes-react-openseadragon
+```
+
+`.claude/lsp/tsgo-bridge.py` is a vendored copy owned by the `dev-env` repo -
+read its README for what the bridge does and why tsgo needs one. Change it
+there and re-run that repo's `make sync-lsp-plugins`; do not edit the copy here.
+
 ## Common commands
 
 | Command              | Purpose                                              |

@@ -1,0 +1,6 @@
+{
+  "name": "tsgo-lsp",
+  "description": "Serves TypeScript files from tsgo, bridging its pull diagnostics",
+  "version": "1.0.0",
+  "author": { "name": "Cellbytes" }
+}

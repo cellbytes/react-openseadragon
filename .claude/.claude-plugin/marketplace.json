@@ -1,0 +1,12 @@
+{
+  "name": "cellbytes-react-openseadragon",
+  "description": "Claude Code plugins maintained inside this Cellbytes repository",
+  "owner": { "name": "Cellbytes" },
+  "plugins": [
+    {
+      "name": "tsgo-lsp",
+      "source": "./plugins/tsgo-lsp",
+      "description": "Serves TypeScript files from tsgo, bridging its pull diagnostics"
+    }
+  ]
+}
