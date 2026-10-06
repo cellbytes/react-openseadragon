@@ -41,8 +41,8 @@
     "access": "public"
   },
   "scripts": {
-    "build": "vite build && tsgo -p tsconfig.build.json",
-    "typecheck": "tsgo --noEmit",
+    "build": "vite build && tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
     "lint": "oxlint . && oxfmt --check .",
     "format": "oxfmt .",
     "test": "vitest run",
@@ -59,7 +59,6 @@
     "@types/openseadragon": "^6.0.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@typescript/native-preview": "^7.0.0-dev.20260519.1",
     "@vitejs/plugin-react": "^6.0.2",
     "@vitest/browser-playwright": "^4.1.6",
     "lefthook": "^2.1.8",
@@ -70,6 +69,7 @@
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "semantic-release": "^25.0.3",
+    "typescript": "^7.0.2",
     "vite": "^8.0.13",
     "vitest": "^4.1.6",
     "vitest-browser-react": "^2.2.0"

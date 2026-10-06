@@ -49,16 +49,16 @@ is at [cellbytes.github.io/react-openseadragon](https://cellbytes.github.io/reac
 ## Development
 
 This project uses Node 24 (see `.nvmrc`), [oxlint]/[oxfmt] for linting and
-formatting, [tsgo] for type checking, and Vitest browser mode (Playwright) for
+formatting, [TypeScript] 7 for type checking, and Vitest browser mode (Playwright) for
 tests against a real viewer.
 
 ```sh
 npm install                       # also installs git hooks via lefthook
 npm run lint                      # oxlint + oxfmt --check
-npm run typecheck                 # tsgo --noEmit
+npm run typecheck                 # tsc --noEmit
 npx playwright install chromium   # one-time, for browser tests
 npm run test                      # vitest run (browser mode)
-npm run build                     # ESM bundle (Vite) + .d.ts (tsgo)
+npm run build                     # ESM bundle (Vite) + .d.ts (tsc)
 ```
 
 Commits follow [Conventional Commits][cc]; releases to npm are automated by
@@ -66,7 +66,7 @@ Commits follow [Conventional Commits][cc]; releases to npm are automated by
 
 [oxlint]: https://oxc.rs/docs/guide/usage/linter
 [oxfmt]: https://oxc.rs/
-[tsgo]: https://github.com/microsoft/typescript-go
+[TypeScript]: https://www.typescriptlang.org/
 [cc]: https://www.conventionalcommits.org/
 [semantic-release]: https://semantic-release.gitbook.io/
 

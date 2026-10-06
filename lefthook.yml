@@ -9,7 +9,7 @@ pre-commit:
     format:
       glob: '*.{ts,tsx}'
       run: npx oxfmt --check {staged_files}
-    # tsgo has no reliable single-file mode, so typecheck the whole project.
+    # tsc has no reliable single-file mode, so typecheck the whole project.
     typecheck:
       run: npm run typecheck
 
