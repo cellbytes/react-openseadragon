@@ -1,6 +1,6 @@
 {
-  "tsgo": {
-    "command": "${CLAUDE_PROJECT_DIR}/.claude/lsp/tsgo-bridge.py",
+  "typescript": {
+    "command": "${CLAUDE_PROJECT_DIR}/.claude/lsp/typescript-bridge.py",
     "extensionToLanguage": { ".ts": "typescript", ".tsx": "typescriptreact", ".mts": "typescript", ".cts": "typescript" },
     "workspaceFolder": "${CLAUDE_PROJECT_DIR}"
   }

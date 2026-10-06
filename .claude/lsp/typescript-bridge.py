@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
-"""Make a tsgo language server usable by a push-only, pull-unaware LSP client.
+"""Make the TypeScript language server usable by a push-only, pull-unaware client.
 
-tsgo is multi-project on its own: it walks to each file's nearest tsconfig.json,
+The server (`tsc --lsp`, TypeScript 7 and later) is multi-project on its own: it walks to each file's nearest tsconfig.json,
 so one instance serves every TypeScript project in the workspace with the right
 compiler options and the right node_modules. What it does not do is hand a
 client like Claude Code anything it can read.
 
 Two mismatches sit between them, and this bridge closes both:
 
-* tsgo reports through the pull model. It answers `textDocument/diagnostic` on
+* The server reports through the pull model. It answers `textDocument/diagnostic` on
   request and pushes only empty `publishDiagnostics` notifications, while the
   client listens for pushed diagnostics and never asks. The bridge pulls after
   every edit and republishes the result as a push.
-* tsgo sends `client/registerCapability` during startup and waits for a reply.
+* The server sends `client/registerCapability` during startup and waits for a reply.
   The client has no handler for it, so an unbridged session hangs before the
   first file is even opened. The bridge answers it.
 
 Everything else is passed through untouched, so navigation (definitions,
-references, hover, rename) is whatever tsgo natively supports.
+references, hover, rename) is whatever the server natively supports.
 """
 
 import json
@@ -30,7 +30,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-# How long to let edits settle before asking tsgo to re-check a file. Keystroke
+# How long to let edits settle before asking the server to re-check a file. Keystroke
 # level debouncing is pointless here - edits arrive as whole-file writes from a
 # tool - but a burst of writes across several files should still collapse.
 DEBOUNCE_SECONDS = 0.35
@@ -49,14 +49,18 @@ UNANSWERABLE_SERVER_REQUESTS = frozenset(
     {"client/registerCapability", "client/unregisterCapability"}
 )
 
-# tsgo narrates snapshot cloning and cache statistics at info level; only real
+# The server narrates snapshot cloning and cache statistics at info level; only real
 # problems are worth putting in the client's log.
 LOG_LEVEL_WARNING = 2
+
+# `tsc` serves the language server protocol from this major release on.
+MIN_SERVER_MAJOR = 7
+SERVER_ARGS = ("--lsp", "--stdio")
 
 
 def log(message: str) -> None:
     """Write a bridge diagnostic to stderr, where the LSP client collects it."""
-    print(f"[tsgo-bridge] {message}", file=sys.stderr, flush=True)
+    print(f"[typescript-bridge] {message}", file=sys.stderr, flush=True)
 
 
 def read_frame(stream: Any) -> dict[str, Any] | None:
@@ -90,24 +94,41 @@ def write_frame(stream: Any, lock: threading.Lock, message: dict[str, Any]) -> N
         stream.flush()
 
 
-def find_tsgo(workspace: Path) -> list[str]:
-    """Locate the tsgo binary, preferring the one a project here pins.
+def has_language_server(package: Path) -> bool:
+    """Tell whether a `typescript` package is TypeScript 7 or later.
 
-    Repos pin different native-preview builds, and the point of using tsgo at
-    all is that a file is checked the way its own `npm run typecheck` checks it.
+    Earlier releases have no `--lsp` mode, and a project here can pin one for a
+    tool that needs the JavaScript compiler API, so a `tsc` on its own proves
+    nothing.
     """
-    override = os.environ.get("TSGO_BIN")
+    try:
+        manifest = json.loads((package / "package.json").read_text())
+    except (OSError, ValueError):
+        return False
+    major = str(manifest.get("version", "")).split(".", 1)[0]
+    return major.isdigit() and int(major) >= MIN_SERVER_MAJOR
+
+
+def find_server(workspace: Path) -> list[str]:
+    """Locate the TypeScript compiler, preferring the one a project here pins.
+
+    Repos pin different TypeScript releases, and the point of using the
+    compiler as the server is that a file is checked the way its own
+    `npm run typecheck` checks it.
+    """
+    override = os.environ.get("TYPESCRIPT_LSP_BIN")
     if override:
-        return [override, "--lsp", "--stdio"]
-    candidates = [workspace / "node_modules" / ".bin" / "tsgo"]
-    candidates += sorted(workspace.glob("*/node_modules/.bin/tsgo"))
-    for candidate in candidates:
-        if candidate.is_file():
-            return [str(candidate), "--lsp", "--stdio"]
-    found = shutil.which("tsgo")
-    if found:
-        return [found, "--lsp", "--stdio"]
-    message = f"no tsgo binary found under {workspace}"
+        return [override, *SERVER_ARGS]
+    packages = [workspace / "node_modules" / "typescript"]
+    packages += sorted(workspace.glob("*/node_modules/typescript"))
+    for package in packages:
+        executable = package / "bin" / "tsc"
+        if executable.is_file() and has_language_server(package):
+            return [str(executable), *SERVER_ARGS]
+    found = shutil.which("tsc")
+    if found and has_language_server(Path(found).resolve().parent.parent):
+        return [found, *SERVER_ARGS]
+    message = f"no TypeScript {MIN_SERVER_MAJOR}+ found under {workspace}"
     raise RuntimeError(message)
 
 
@@ -115,7 +136,7 @@ def client_capabilities(params: dict[str, Any]) -> dict[str, Any]:
     """Add pull-diagnostic support to what the client declared.
 
     The bridge, not the client, is the one that consumes pull diagnostics, so it
-    has to advertise them or tsgo leaves its diagnostic provider off.
+    has to advertise them or the server leaves its diagnostic provider off.
     """
     capabilities = dict(params.get("capabilities") or {})
     text_document = dict(capabilities.get("textDocument") or {})
@@ -138,13 +159,13 @@ def send_upstream(state: dict[str, Any], message: dict[str, Any]) -> None:
 def request_server(
     state: dict[str, Any], method: str, params: dict[str, Any]
 ) -> dict[str, Any] | None:
-    """Issue a bridge-owned request to tsgo and wait for its reply.
+    """Issue a bridge-owned request to the server and wait for its reply.
 
     Ids are namespaced so they can never collide with the client's own, which
     are forwarded verbatim.
     """
     with state["request_lock"]:
-        request_id = f"tsgo-bridge:{state['next_request_id']}"
+        request_id = f"typescript-bridge:{state['next_request_id']}"
         state["next_request_id"] += 1
         waiter: dict[str, Any] = {"event": threading.Event(), "response": None}
         state["waiters"][request_id] = waiter
@@ -211,11 +232,11 @@ def schedule_refresh(state: dict[str, Any], uri: str) -> None:
 
 
 def pump_server(state: dict[str, Any]) -> None:
-    """Forward tsgo's output upstream, answering what the client cannot."""
+    """Forward the server's output upstream, answering what the client cannot."""
     while True:
         message = read_frame(state["server"].stdout)
         if message is None:
-            log("tsgo closed its output")
+            log("the server closed its output")
             return
         method = message.get("method")
         if method is not None and "id" in message:
@@ -227,7 +248,7 @@ def pump_server(state: dict[str, Any]) -> None:
             send_upstream(state, message)
             continue
         if method == "textDocument/publishDiagnostics":
-            # tsgo pushes these empty; the real ones come from the pull worker,
+            # The server pushes these empty; the real ones come from the pull worker,
             # and forwarding these would clear what the pull just published.
             continue
         if method == "window/logMessage":
@@ -286,7 +307,7 @@ def main() -> None:
 
     params = initialize.get("params") or {}
     workspace = Path(params.get("rootPath") or Path.cwd())
-    command = find_tsgo(workspace)
+    command = find_server(workspace)
     log(f"workspace {workspace}, server {command[0]}")
 
     server = subprocess.Popen(

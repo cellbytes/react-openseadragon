@@ -13,7 +13,7 @@ package and consumed by the Cellbytes `app` client. It is a library, not an app.
 ## Toolchain
 
 - Node (see [.nvmrc](.nvmrc)); npm for dependencies (`package-lock.json`).
-- Build: Vite + `tsgo` (TypeScript native preview) for types.
+- Build: Vite for the bundle, `tsc` (TypeScript 7) for types.
 - Lint/format: `oxlint` + `oxfmt` (configured in `.oxlintrc.json` / `.oxfmtrc.json`).
 - Tests: Vitest (`vitest.setup.ts`); test utilities in `src/testUtils.tsx`.
 - Git hooks: `lefthook` (installed via the `prepare` script) runs lint, format
@@ -21,7 +21,7 @@ package and consumed by the Cellbytes `app` client. It is a library, not an app.
 
 ## TypeScript language server for coding agents
 
-Coding agents get tsgo diagnostics and navigation in-session, from a Claude Code
+Coding agents get TypeScript diagnostics and navigation in-session, from a Claude Code
 plugin this repo carries under `.claude/`. There is no devcontainer here to
 register it on create: inside the unified dev-env container this repo's
 TypeScript is already served by the plugin the `app` repo carries, and opening
@@ -29,11 +29,11 @@ it standalone means running these once by hand:
 
 ```sh
 claude plugin marketplace add <repo root>/.claude
-claude plugin install tsgo-lsp@cellbytes-react-openseadragon
+claude plugin install typescript-lsp@cellbytes-react-openseadragon
 ```
 
-`.claude/lsp/tsgo-bridge.py` is a vendored copy owned by the `dev-env` repo -
-read its README for what the bridge does and why tsgo needs one. Change it
+`.claude/lsp/typescript-bridge.py` is a vendored copy owned by the `dev-env`
+repo - read its README for what the bridge does and why the server needs one. Change it
 there and re-run that repo's `make sync-lsp-plugins`; do not edit the copy here.
 
 ## Common commands
@@ -42,7 +42,7 @@ there and re-run that repo's `make sync-lsp-plugins`; do not edit the copy here.
 | -------------------- | ---------------------------------------------------- |
 | `npm install`        | Install dependencies (also installs lefthook hooks). |
 | `npm run build`      | Build the library and emit type declarations.        |
-| `npm run typecheck`  | Type-check with `tsgo --noEmit`.                     |
+| `npm run typecheck`  | Type-check with `tsc --noEmit`.                      |
 | `npm run lint`       | `oxlint .` + `oxfmt --check .`.                      |
 | `npm run format`     | Auto-format with `oxfmt`.                            |
 | `npm test`           | Run the Vitest suite once.                           |
