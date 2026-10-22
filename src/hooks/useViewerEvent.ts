@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useInsertionEffect, useRef } from 'react';
 
 import { useViewerContext } from '../context/ViewerContext';
 
@@ -55,8 +55,15 @@ export function useViewerEvent<
   const enabled = options?.enabled ?? true;
 
   // Always hold the latest handler without re-registering the OSD subscription.
+  // The ref is written in a commit-phase effect rather than during render, so a
+  // render React discards (concurrent rendering, Suspense) never leaks its
+  // handler. An insertion effect runs before every layout and passive effect in
+  // the tree, so an event fired from any effect of the same commit, or from OSD
+  // after it, already dispatches to this commit's handler.
   const handlerRef = useRef(handler);
-  handlerRef.current = handler;
+  useInsertionEffect(() => {
+    handlerRef.current = handler;
+  });
 
   useEffect(() => {
     if (!viewer || !enabled) return;

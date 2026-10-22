@@ -1,6 +1,8 @@
+import { useLayoutEffect } from 'react';
+
 import { Viewer } from 'openseadragon';
 import { describe, expect, test, vi } from 'vitest';
-import { renderHook } from 'vitest-browser-react';
+import { render, renderHook } from 'vitest-browser-react';
 
 import { ViewerContext } from '../context/ViewerContext';
 import { createMockContext } from '../testUtils';
@@ -133,5 +135,82 @@ describe('useViewerEvent', () => {
     stableWrapper({});
     expect(handler2).toHaveBeenCalledOnce();
     expect(handler1).not.toHaveBeenCalled();
+  });
+
+  test('each event after a re-render reaches only the handler of the latest render', async () => {
+    const mockViewer = {
+      addHandler: vi.fn(),
+      addOnceHandler: vi.fn(),
+      removeHandler: vi.fn(),
+    } as unknown as Viewer;
+
+    const handler1 = vi.fn();
+    const handler2 = vi.fn();
+    const handler3 = vi.fn();
+
+    const wrapper = ({ children }: React.PropsWithChildren) => (
+      <ViewerContext.Provider value={createMockContext({ viewer: mockViewer })}>
+        {children}
+      </ViewerContext.Provider>
+    );
+
+    const { rerender } = await renderHook(
+      ({ h }: { h?: typeof handler1 } = {}) => useViewerEvent('animation', h ?? handler1),
+      { wrapper, initialProps: { h: handler1 } }
+    );
+    const [[, stableWrapper]] = (mockViewer.addHandler as ReturnType<typeof vi.fn>).mock.calls;
+
+    stableWrapper({ n: 1 });
+    await rerender({ h: handler2 });
+    stableWrapper({ n: 2 });
+    await rerender({ h: handler3 });
+    stableWrapper({ n: 3 });
+
+    expect(handler1.mock.calls).toEqual([[{ n: 1 }]]);
+    expect(handler2.mock.calls).toEqual([[{ n: 2 }]]);
+    expect(handler3.mock.calls).toEqual([[{ n: 3 }]]);
+    expect(mockViewer.addHandler).toHaveBeenCalledOnce();
+  });
+
+  test('an event fired from a child layout effect of the same commit reaches the new handler', async () => {
+    const mockViewer = {
+      addHandler: vi.fn(),
+      addOnceHandler: vi.fn(),
+      removeHandler: vi.fn(),
+    } as unknown as Viewer;
+    const fireRegistered = (n: number) => {
+      const calls = (mockViewer.addHandler as ReturnType<typeof vi.fn>).mock.calls;
+      calls.at(-1)?.[1]({ n });
+    };
+
+    // Fires the registered wrapper while React commits, before passive effects.
+    function FireOnCommit({ n }: { n: number }) {
+      useLayoutEffect(() => {
+        fireRegistered(n);
+      }, [n]);
+      return null;
+    }
+
+    function Subscriber({ handler, n }: { handler: (e: unknown) => void; n: number }) {
+      useViewerEvent('animation', handler);
+      return <FireOnCommit n={n} />;
+    }
+
+    const handler1 = vi.fn();
+    const handler2 = vi.fn();
+    const ui = (handler: (e: unknown) => void, n: number) => (
+      <ViewerContext.Provider value={createMockContext({ viewer: mockViewer })}>
+        <Subscriber handler={handler} n={n} />
+      </ViewerContext.Provider>
+    );
+
+    // On mount the subscription does not exist yet when the layout effect runs.
+    const { rerender } = await render(ui(handler1, 1));
+    expect(mockViewer.addHandler).toHaveBeenCalledOnce();
+
+    await rerender(ui(handler2, 2));
+
+    expect(handler1).not.toHaveBeenCalled();
+    expect(handler2.mock.calls).toEqual([[{ n: 2 }]]);
   });
 });
