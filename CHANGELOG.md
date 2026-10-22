@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/cellbytes/react-openseadragon/compare/v1.1.1...v1.1.2) (2026-10-22)
+
+
+### Bug Fixes
+
+* **useViewerEvent:** update the handler ref in an insertion effect ([2b3ce30](https://github.com/cellbytes/react-openseadragon/commit/2b3ce3053e19c31a4cc841e280fb4f494d943433))
+
 ## [1.1.1](https://github.com/cellbytes/react-openseadragon/compare/v1.1.0...v1.1.1) (2026-07-01)
 
 
