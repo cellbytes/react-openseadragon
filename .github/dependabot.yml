@@ -21,9 +21,21 @@ updates:
           - 'openseadragon'
           - '@types/openseadragon'
 
+  # Patch and minor updates arrive as one grouped PR; majors stay one PR each.
   - package-ecosystem: github-actions
     directory: '/'
+    open-pull-requests-limit: 4
     schedule:
       interval: weekly
     commit-message:
       prefix: chore(deps)
+    cooldown:
+      default-days: 7
+    groups:
+      github-actions:
+        applies-to: version-updates
+        patterns:
+          - '*'
+        update-types:
+          - 'minor'
+          - 'patch'
